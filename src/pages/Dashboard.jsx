@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from "react";
-
-const sampleData = [
-  { nomor: "002", time: "09.02", layanan: "Buku Hilang, Riset Pin" },
-  {
-    nomor: "003",
-    time: "09.05",
-    layanan: "Buku Hilang, Riset Pin Kartu, Riset m-banking",
-  },
-  { nomor: "004", time: "09.12", layanan: "Buku Hilang" },
-  { nomor: "005", time: "09.13", layanan: "Buku Rusak" },
-  { nomor: "006", time: "09.20", layanan: "Buku Hilang" },
-  { nomor: "007", time: "09.32", layanan: "Buku Rusak" },
-  { nomor: "008", time: "09.33", layanan: "Buku Hilang, Riset Pin" },
-];
+import { useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
+import api from "../utils/api";
 
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const currentAntrian = "001";
+  const [branchName, setBranchName] = useState("");
+  const [branchAddress, setBranchAddress] = useState("");
+  const [branchId, setBranchId] = useState(null);
+  const [queues, setQueues] = useState([]);
+  const navigate = useNavigate();
+  const currentAntrian = "001"; // bisa nanti ambil dari queue terdepan
 
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchProfileAndQueues = async () => {
+      try {
+        const res = await api.get("cs/profile");
+        const branch = res.data.cs.branch;
+        setBranchName(branch.name);
+        setBranchAddress(branch.address);
+        setBranchId(branch.id);
+
+        // Fetch queue berdasarkan branchId
+        const queueRes = await api.get(`queue/waiting/${branch.id}`);
+        setQueues(queueRes.data);
+      } catch (err) {
+        console.error("Gagal mengambil data cabang / antrian", err);
+      }
+    };
+
+    fetchProfileAndQueues();
   }, []);
 
   const formatDate = (date) =>
@@ -38,15 +52,41 @@ const Dashboard = () => {
       second: "2-digit",
     });
 
+  const formatHourMinute = (isoDateString) => {
+    const date = new Date(isoDateString);
+    return date.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-black text-white p-6 font-sans">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold tracking-wider">
-          TEMUCS - INFORMASI ANTRIAN
-        </h1>
-        <div className="text-right">
-          <p className="text-xl">{formatDate(currentTime)}</p>
-          <p className="text-3xl font-mono">{formatTime(currentTime)}</p>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="text-4xl font-bold tracking-wider mb-1">
+            Informasi Antrian - BNI Branch {branchName}
+          </h1>
+          <p className="text-sm text-gray-300 max-w-[600px]">{branchAddress}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-xl">{formatDate(currentTime)}</p>
+            <p className="text-3xl font-mono">{formatTime(currentTime)}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            title="Logout"
+            className="text-white hover:text-red-500 text-xl"
+          >
+            <FiLogOut />
+          </button>
         </div>
       </div>
 
@@ -62,13 +102,22 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {sampleData.map((row, i) => (
-                <tr key={i} className="border-t border-gray-300">
-                  <td className="py-2">{row.nomor}</td>
-                  <td className="py-2">{row.time}</td>
-                  <td className="py-2">{row.layanan}</td>
+              {queues.map((q) => (
+                <tr key={q.id} className="border-t border-gray-300">
+                  <td className="py-2">{q.ticketNumber}</td>
+                  <td className="py-2">{formatHourMinute(q.bookingDate)}</td>
+                  <td className="py-2">
+                    {q.services.map((s) => s.serviceName).join(", ")}
+                  </td>
                 </tr>
               ))}
+              {queues.length === 0 && (
+                <tr>
+                  <td colSpan="3" className="text-center text-gray-400 py-4">
+                    Tidak ada antrian menunggu
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
