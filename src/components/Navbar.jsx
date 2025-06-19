@@ -1,12 +1,33 @@
 import React from "react";
-import LogoTemuCS from "../../public/images/logo_temucs.png";
 import { IoExitOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+
 const Navbar = () => {
-  console.log(LogoTemuCS);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
 
   return (
-    <div className="h-16 bg-white flex items-center px-4 py-4 shadow-md z-10">
-      <div className="flex-1 px-3">TemuCS 1.0</div>
+    <div className="relative z-10">
+      {/* Motif oranye di bagian atas */}
+      <div
+        className="h-15 bg-cover bg-center"
+        style={{ backgroundImage: `url('/images/navbar_motif.png')` }}
+      ></div>
+
+      {/* Tombol logout di kanan atas */}
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={handleLogout}
+          className="text-white hover:text-red-500"
+          title="Logout"
+        >
+          <IoExitOutline size={24} />
+        </button>
+      </div>
     </div>
   );
 };

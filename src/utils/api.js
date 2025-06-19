@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Ganti baseURL sesuai domain ngrok/devtunnel/backend kamu
 const api = axios.create({
-  baseURL: "https://3fd5pjgv-3000.asse.devtunnels.ms/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 // Interceptor untuk menyisipkan token ke header Authorization
