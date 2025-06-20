@@ -22,8 +22,6 @@ const Login = () => {
 
       // Simpan token dan role
       localStorage.setItem("token", token);
-      localStorage.setItem("csId", csId);
-      localStorage.setItem("role", "cs");
 
       // Redirect ke halaman dashboard CS
       navigate("/cs-dashboard");
