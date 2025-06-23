@@ -2,63 +2,27 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/api";
 
 const TicketNow = () => {
-  const [queues, setQueues] = useState([]);
-  const [csIdOrder, setCsIdOrder] = useState([]);
+  const [ticketNumber, setTicketNumber] = useState("-");
 
   useEffect(() => {
-    const fetchInProgressQueues = async () => {
+    const fetchTicketNow = async () => {
       try {
         const res = await api.get("/queue/inprogress/cs");
-        const data = Array.isArray(res.data) ? res.data : [res.data];
-
-        const uniqueCsIds = [...new Set(data.map((item) => item.csId))];
-        setCsIdOrder(uniqueCsIds);
-        setQueues(data);
-      } catch (error) {
-        console.error("Gagal mengambil antrian in-progress:", error);
+        const data = res.data;
+        setTicketNumber(data?.ticketNumber || "-");
+      } catch (err) {
+        console.error("Gagal mengambil data giliran sekarang:", err);
+        setTicketNumber("-");
       }
     };
 
-    fetchInProgressQueues();
+    fetchTicketNow();
   }, []);
 
-  const getCsLabel = (csId) => {
-    const index = csIdOrder.indexOf(csId);
-    if (index === 0) return "Customer service A";
-    if (index === 1) return "Customer service B";
-    if (index === 2) return "Customer service C";
-    return "Customer service";
-  };
-
-  const mainTicket = queues[0];
-  const otherTickets = queues.slice(1);
-
   return (
-    <div className="w-full">
-      {/* Panel utama: Tiket pertama */}
-      {mainTicket && (
-        <div className="text-white text-center">
-          <p className="text-3xl font-semibold mb-2">
-            {getCsLabel(mainTicket.csId)}
-          </p>
-          <p className="text-[120px] font-bold tracking-widest leading-none">
-            {mainTicket.ticketNumber}
-          </p>
-        </div>
-      )}
-
-      {/* Panel bawah: Tiket kedua dan ketiga */}
-      <div className="flex justify-center mt-6 gap-6">
-        {otherTickets.map((q) => (
-          <div
-            key={q.id}
-            className="bg-gradient-to-r from-orange-400 to-orange-300 text-white px-6 py-4 rounded-lg shadow-md text-center"
-          >
-            <p className="text-sm mb-1">{getCsLabel(q.csId)}</p>
-            <p className="text-2xl font-bold">{q.ticketNumber}</p>
-          </div>
-        ))}
-      </div>
+    <div className="w-full h-full bg-gradient-to-r from-orange-500 to-orange-300 text-white rounded-xl shadow-lg flex flex-col items-center justify-center p-10">
+      <p className="text-2xl font-semibold mb-4">Giliran Sekarang:</p>
+      <p className="text-7xl font-bold">{ticketNumber}</p>
     </div>
   );
 };
