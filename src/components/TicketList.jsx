@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/api"; // pastikan path ini sesuai dengan struktur proyekmu
+import { io } from "socket.io-client";
+
+const socket = io("https://temucs-tzaoj.ondigitalocean.app")
+// const socket = io("http://localhost:3000/api"); 
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
@@ -8,7 +12,7 @@ const TicketList = () => {
     const fetchTickets = async () => {
       try {
         const res = await api.get("/queue/active-cs-customer");
-        const data = res.data.filter(Boolean); // Hilangkan nilai null
+        const data = res.data.filter(Boolean);
         setTickets(data);
       } catch (err) {
         console.error("Gagal mengambil data:", err);
@@ -17,22 +21,50 @@ const TicketList = () => {
     };
 
     fetchTickets();
+
+    // Tambah antrean baru saat CS mengambil
+    socket.on("queue:in-progress", (data) => {
+      setTickets((prev) => {
+        const alreadyExists = prev.some((t) => t.ticketNumber === data.ticketNumber);
+        if (alreadyExists) return prev;
+        return [...prev, {
+          ticketNumber: data.ticketNumber,
+          cs: { name: "-" }, // atau bisa fetch ulang jika perlu
+          status: data.status,
+          calledAt: data.calledAt,
+        }];
+      });
+    });
+
+    // Hapus antrean jika status selesai/dibatalkan
+    socket.on("queue:status-updated", (data) => {
+      setTickets((prev) =>
+        prev.filter((t) => t.ticketNumber !== data.ticketNumber)
+      );
+    });
+
+    return () => {
+      socket.off("queue:in-progress");
+      socket.off("queue:status-updated");
+    };
   }, []);
 
   const displayedTickets =
     tickets.length > 0 ? tickets : [{ cs: { name: "-" }, ticketNumber: "-" }];
 
   return (
-    <div className="flex justify-center gap-8 mt-8">
+    <div className="w-full px-6 py-2 bg-white rounded-xl shadow flex flex-col gap-3">
       {displayedTickets.map((item, idx) => (
         <div
           key={idx}
-          className="bg-gradient-to-r from-orange-400 to-orange-300 text-white px-10 py-8 rounded-2xl shadow-lg text-center min-w-[240px]"
+          className="w-full bg-white px-4 py-3 rounded-xl shadow-sm border border-orange-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1"
         >
-          <p className="text-lg font-semibold mb-2">
-            Customer Service: {item.cs?.name || "-"}
+          <p className="text-sm sm:text-base font-medium text-gray-800 text-left">
+            CS: {item.cs?.name || "-"}
           </p>
-          <p className="text-4xl font-bold">{item.ticketNumber || "-"}</p>
+          <p className="text-xl sm:text-2xl font-bold text-black text-right whitespace-nowrap overflow-hidden text-ellipsis">
+            {item.ticketNumber || "-"}
+          </p>
         </div>
       ))}
     </div>

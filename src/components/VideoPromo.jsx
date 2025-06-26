@@ -2,14 +2,14 @@ import React from "react";
 
 const VideoPromo = () => {
   return (
-    <div className="w-full rounded-lg shadow overflow-hidden">
+    <div className="w-full aspect-video  rounded-lg flex items-center justify-center shadow-lg">
       <video
-        src="/videos/promo.mp4" // pastikan file ada di public/videos/
+        src="/videos/promo.mp4"
         autoPlay
         muted
         loop
         playsInline
-        className="w-full h-full object-cover"
+        className="w-[90%] h-auto object-contain rounded-md"
       />
     </div>
   );

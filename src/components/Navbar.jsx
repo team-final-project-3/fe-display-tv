@@ -1,33 +1,76 @@
-import React from "react";
-import { IoExitOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import bgBatik from "/src/assets/bg_batik.png";
+import { FiLogOut } from "react-icons/fi"; // Feather icon logout
 
 const Navbar = () => {
-  const navigate = useNavigate();
+  const [time, setTime] = useState(new Date());
+
+  // Auto-update waktu tiap detik
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString("id-ID", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
+    // Hapus token atau data login dari localStorage/sessionStorage
+    localStorage.removeItem("token");
+
+    // Redirect ke halaman login (jika pakai React Router)
+    window.location.href = "/";
   };
 
   return (
-    <div className="relative z-10">
-      {/* Motif oranye di bagian atas */}
-      <div
-        className="h-15 bg-cover bg-center"
-        style={{ backgroundImage: `url('/images/navbar_motif.png')` }}
-      ></div>
+    <div className="relative w-full h-16 flex items-center justify-between overflow-hidden"
+      style={{
+        backgroundImage: `url(${bgBatik})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}>
 
-      {/* Tombol logout di kanan atas */}
-      <div className="absolute top-4 right-4">
+      {/* Logo kiri */}
+      <div className="z-10 h-full bg-white px-4 flex items-center">
+        <img
+          src="/src/assets/logo_bni.png"
+          alt="BNI Logo"
+          className="h-8 object-contain"
+        />
+      </div>
+
+      {/* Tanggal & Jam + Logout kanan */}
+      <div className="z-10 h-full bg-white px-4 py-2 flex items-center text-orange-600 font-bold shadow-2xl">
+        <div className="flex flex-col items-end">
+          <span className="text-base">{formatDate(time)}</span>
+          <span className="text-4xl tracking-wider">{formatTime(time)}</span>
+        </div>
         <button
           onClick={handleLogout}
-          className="text-white hover:text-red-500"
+          className="text-white hover:text-gray-300 transition"
           title="Logout"
         >
-          <IoExitOutline size={24} />
+          <FiLogOut size={20} />
         </button>
+
       </div>
+
+
+
     </div>
   );
 };
