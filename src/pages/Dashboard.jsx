@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import VideoPromo from "../components/VideoPromo";
 import TicketNow from "../components/TicketNow";
 import TicketList from "../components/TicketList";
+import RunningText from "../components/RunningText";
 
 const Dashboard = () => {
   return (
@@ -16,11 +17,12 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 gap-6 h-full">
 
             {/* KIRI */}
-            <div className="flex flex-col items-center justify-center gap-4 h-full px-4">
-              <div className="w-full max-w-2xl">
+            <div className="flex flex-col items-center justify-center gap-3 h-full px-2">
+
+              <div className="w-full max-w-3xl">
                 <TicketNow />
               </div>
-              <div className="w-full max-w-2xl">
+              <div className="w-full max-w-3xl">
                 <TicketList />
               </div>
             </div>
@@ -32,8 +34,9 @@ const Dashboard = () => {
 
           </div>
         </div>
-      </div>
 
+      </div>
+      <RunningText />
     </div>
   );
 };

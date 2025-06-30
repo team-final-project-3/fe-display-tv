@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/api";
 import { io } from "socket.io-client";
 
-const socket = io("https://temucs-tzaoj.ondigitalocean.app")
-// const socket = io("http://localhost:3000/api"); 
+const socket = io(import.meta.env.VITE_API_SOCKET)
 
 const TicketNow = () => {
   const [ticketNumber, setTicketNumber] = useState("-");
@@ -16,7 +15,7 @@ const TicketNow = () => {
         setTicketNumber(data?.ticketNumber || "-");
       } catch (err) {
         if (err.response?.status !== 404) {
-          console.error("Gagal mengambil data giliran sekarang:", err);
+          console.error("Gagal mengambil data gilmiran sekarang:", err);
         }
         setTicketNumber("-");
       }
@@ -36,9 +35,17 @@ const TicketNow = () => {
       );
     });
 
+    // Event: antrian diskip
+    socket.on("queue:status-updated", (data) => {
+      if (data.status === "skipped") {
+        fetchTicketNow();
+      }
+    });
+
     return () => {
       socket.off("queue:called");
       socket.off("queue:in-progress");
+      socket.off("queue:status-updated");
     };
   }, []);
 

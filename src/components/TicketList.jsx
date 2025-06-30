@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/api"; // pastikan path ini sesuai dengan struktur proyekmu
+
 import { io } from "socket.io-client";
 
-const socket = io("https://temucs-tzaoj.ondigitalocean.app")
-// const socket = io("http://localhost:3000/api"); 
+const socket = io(import.meta.env.VITE_API_SOCKET)
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
@@ -24,12 +24,24 @@ const TicketList = () => {
 
     // Tambah antrean baru saat CS mengambil
     socket.on("queue:in-progress", (data) => {
+      console.log("Data socket:", data);
       setTickets((prev) => {
-        const alreadyExists = prev.some((t) => t.ticketNumber === data.ticketNumber);
-        if (alreadyExists) return prev;
+        const existsIndex = prev.findIndex((t) => t.ticketNumber === data.ticketNumber);
+
+        if (existsIndex !== -1) {
+          const updated = [...prev];
+          updated[existsIndex] = {
+            ...updated[existsIndex],
+            cs: data.cs || updated[existsIndex].cs,
+            status: data.status,
+            calledAt: data.calledAt,
+          };
+          return updated;
+        }
+
         return [...prev, {
           ticketNumber: data.ticketNumber,
-          cs: { name: "-" }, // atau bisa fetch ulang jika perlu
+          cs: data.cs || { name: "-" },
           status: data.status,
           calledAt: data.calledAt,
         }];
