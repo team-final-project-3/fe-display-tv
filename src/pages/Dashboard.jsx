@@ -12,6 +12,7 @@ const Dashboard = () => {
       <Navbar />
 
       {/* Konten Tengah */}
+
       <div className="flex-1 px-4 py-3">
         <div className="max-w-screen-xl mx-auto w-full h-full">
           <div className="grid grid-cols-2 gap-6 h-full">
