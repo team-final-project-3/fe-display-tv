@@ -63,7 +63,7 @@ const TicketNow = () => {
 
       {csName && csName !== "-" && (
         <p className="text-sm sm:text-base md:text-lg text-gray-600 font-medium mb-1 text-center">
-          Dilayani oleh: {csName}
+          CS: {csName}
         </p>
       )}
 
