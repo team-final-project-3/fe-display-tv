@@ -19,20 +19,15 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="flex items-center gap-4 p-4">
-      {/* Logo */}
-      <img
-        src="/images/logo-bni.png"
-        alt="Logo BNI"
-        className="w-16 h-16 object-contain"
-      />
-
+    <div className="flex items-center gap-4 p-6">
       {/* Teks */}
       <div>
-        <h1 className="text-2xl font-semibold text-black">
+        <h1 className="text-3xl font-bold text-black">
           BANK NEGARA INDONESIA
         </h1>
-        <p className="text-sm text-gray-600">Branch {branchName}</p>
+        <p className="text-3xl text-orange-600 font-bold truncate max-w-xs">
+          Branch {branchName}
+        </p>
       </div>
     </div>
   );

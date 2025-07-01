@@ -4,6 +4,7 @@ import VideoPromo from "../components/VideoPromo";
 import TicketNow from "../components/TicketNow";
 import TicketList from "../components/TicketList";
 import RunningText from "../components/RunningText";
+import Header from "../components/Header"
 
 const Dashboard = () => {
   return (
@@ -12,7 +13,7 @@ const Dashboard = () => {
       <Navbar />
 
       {/* Konten Tengah */}
-
+      <Header />
       <div className="flex-1 px-4 py-3">
         <div className="max-w-screen-xl mx-auto w-full h-full">
           <div className="grid grid-cols-2 gap-6 h-full">
