@@ -2,16 +2,17 @@ import React from "react";
 
 const VideoPromo = () => {
   return (
-    <div className="w-full aspect-video  rounded-lg flex items-center justify-center shadow-lg">
+
+    <div className="rounded-lg border-4 border-[#F27F0C] bg-white shadow-md overflow-hidden w-full h-full">
       <video
+        className="w-full h-full object-cover"
         src="/videos/promo.mp4"
         autoPlay
-        muted
         loop
-        playsInline
-        className="w-[90%] h-auto object-contain rounded-md"
+        muted
       />
     </div>
+
   );
 };
 

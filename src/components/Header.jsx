@@ -22,7 +22,7 @@ const Header = () => {
     <div className="flex items-center gap-4 p-6">
       {/* Teks */}
       <div>
-        <h1 className="text-3xl font-bold text-black">
+        <h1 className="text-4xl font-bold text-black">
           BANK NEGARA INDONESIA
         </h1>
         <p className="text-3xl text-orange-600 font-bold truncate max-w-xs">
