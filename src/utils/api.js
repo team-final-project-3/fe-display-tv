@@ -1,36 +1,48 @@
 import axios from "axios";
+import isTokenExpired from "../utils/isTokenExpired"; // pastikan file ini ada
 
-// Ganti baseURL sesuai domain ngrok/devtunnel/backend kamu
+// Ganti baseURL sesuai dengan env-mu
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  // baseURL: "http://localhost:3000/api",
 });
 
-// Interceptor untuk menyisipkan token ke header Authorization
+// Interceptor: Sisipkan token ke header
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
 
     if (token) {
+      // Cek apakah token sudah expired
+      if (isTokenExpired(token)) {
+        console.warn("Token expired. Redirecting to session-expired...");
+        localStorage.clear();
+        window.location.href = "/session-expired";
+        return Promise.reject(new Error("Token expired"));
+      }
+
       config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// (Opsional) Interceptor untuk handle error global (misalnya expired token)
+// Interceptor: Handle error global (misalnya token tidak valid)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Contoh: redirect ke login kalau unauthorized
-    if (error.response && error.response.status === 401) {
-      console.warn("Unauthorized. Redirecting to login...");
-      window.location.href = "/"; // asumsi login ada di "/"
+    const currentPath = window.location.pathname;
+
+    const isOnAuthPage =
+      currentPath === "/" ||
+      currentPath === "/login" ||
+      currentPath === "/session-expired";
+
+    if (error.response?.status === 401 && !isOnAuthPage) {
+      console.warn("Unauthorized or token expired. Redirecting...");
+      localStorage.clear();
+      window.location.href = "/session-expired";
     }
 
     return Promise.reject(error);

@@ -43,7 +43,9 @@ const TicketNow = () => {
       <p className="text-base md:text-lg font-bold mb-8 uppercase">Nomor Antrean</p>
 
       {csName && csName !== "-" && (
-        <p className="text-xs md:text-sm text-gray-600 font-medium mb-1">Dilayani oleh: {csName}</p>
+        <p className="text-sm sm:text-base md:text-lg text-gray-600 font-medium mb-1 text-center">
+          CS: {csName}
+        </p>
       )}
 
       <p className="text-5xl md:text-6xl font-bold text-[#01202F] whitespace-nowrap overflow-hidden text-ellipsis">

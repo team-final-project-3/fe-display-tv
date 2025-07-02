@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import bgBatik from "/src/assets/bg_batik.png";
 import { FiLogOut } from "react-icons/fi"; // Feather icon logout
+import logoBni from "../assets/logo_bni.png";
 
 const Navbar = () => {
   const [time, setTime] = useState(new Date());
@@ -37,20 +38,17 @@ const Navbar = () => {
   };
 
   return (
-    <div className="relative w-full h-16 flex items-center justify-between overflow-hidden"
+    <div
+      className="relative w-full h-16 flex items-center justify-between overflow-hidden"
       style={{
         backgroundImage: `url(${bgBatik})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}>
-
+      }}
+    >
       {/* Logo kiri */}
       <div className="z-10 h-full bg-white px-4 flex items-center">
-        <img
-          src="/src/assets/logo_bni.png"
-          alt="BNI Logo"
-          className="h-8 object-contain"
-        />
+        <img src={logoBni} alt="BNI Logo" className="h-8 object-contain" />
       </div>
 
       {/* Tanggal & Jam + Logout kanan */}
@@ -66,11 +64,7 @@ const Navbar = () => {
         >
           <FiLogOut size={20} />
         </button>
-
       </div>
-
-
-
     </div>
   );
 };

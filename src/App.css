@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 body {
-    background-color: #FFDA55;
+  background-color: #ffda55;
 }
 
 @keyframes marquee {
-    0% {
-        transform: translateX(100%);
-    }
+  0% {
+    transform: translateX(50%);
+  }
 
-    100% {
-        transform: translateX(-100%);
-    }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 .marquee {
-    display: inline-block;
-    min-width: 100%;
-    animation: marquee 60s linear infinite;
+  display: inline-block;
+  min-width: 100%;
+  animation: marquee 60s linear infinite;
 }
