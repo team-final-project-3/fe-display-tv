@@ -65,7 +65,7 @@ const TicketList = () => {
     tickets.length > 0 ? tickets : [{ cs: { name: "-" }, ticketNumber: "-" }];
 
   return (
-    <div className="w-full px-6 py-2 bg-white rounded-xl shadow flex flex-col gap-3">
+    <div className="w-full px-6 py-2 bg-white rounded-xl shadow flex flex-col gap-3 max-h-[240px] overflow-y-auto">
       {displayedTickets.map((item, idx) => (
         <div
           key={idx}

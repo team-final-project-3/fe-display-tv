@@ -19,7 +19,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="flex items-center gap-4 p-6">
+    <div className="flex items-center gap-3 p-6">
       {/* Teks */}
       <div>
         <h1 className="text-4xl font-bold text-black">
