@@ -27,7 +27,10 @@ const TicketNow = () => {
 
     fetchTicketNow();
 
-    socket.on("queue:called", fetchTicketNow);
+    socket.on("queue:called", (data) => {
+      setTicketNumber(data?.ticketNumber || "-");
+      setCsName(data?.csName || "-");
+    });
     socket.on("queue:in-progress", fetchTicketNow);
     socket.on("queue:status-updated", fetchTicketNow);
 
